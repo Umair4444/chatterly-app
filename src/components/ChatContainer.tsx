@@ -7,6 +7,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
+import Message from "./Message";
 
 type Messsages = {
   id: string;
@@ -18,9 +19,9 @@ type Messsages = {
 };
 
 const ChatContainer = () => {
-const [messages, setMeassages] = useState<Messsages[]>([]);
+  const [messages, setMeassages] = useState<Messsages[]>([]);
 
-useEffect(() => {
+  useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("date", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const msgs = snapshot.docs.map((doc) => ({
@@ -32,18 +33,13 @@ useEffect(() => {
     return () => unsubscribe();
   }, []);
 
-  return(
-
-      <div className="w-full h-[400px] border-black border-2">
-        {
-            messages.map((message)=>(
-                <div key={message.id}>
-                    {message.message}
-                </div>
-            ))
-        }
-      </div>
-  )
+  return (
+    <div className="w-full h-[400px] border-black border-2">
+      {messages.map((message) => (
+        <Message key={message.id} message={message} />
+      ))}
+    </div>
+  );
 };
 
 export default ChatContainer;
